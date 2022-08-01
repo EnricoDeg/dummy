@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- Example XML document -->
+<coupling
+        xmlns="http://www.w3schools.com"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.w3schools.com coupling.xsd">
+        
+        <redirect redirect_of_root="false" redirect_stdout="false"/>
+
+	<components>
+                <component id="1"> 
+                        <name>DUMMY_SENDER</name>
+                        <model>toy</model>
+                        <simulated>ocean</simulated>
+                        <transient_grid_refs>
+                                <transient_grid_ref id="1" transient_ref="1" grid_ref="1" collection_size="1"/>
+                        </transient_grid_refs>
+                </component>
+                <component id="2">
+                        <name>DUMMY_RECEIVER</name>
+                        <model>toy</model>
+                        <simulated>ocean</simulated>
+                        <transient_grid_refs>
+                                <transient_grid_ref id="1" transient_ref="1" grid_ref="2" collection_size="1"/>
+                        </transient_grid_refs>
+                </component>
+        </components>
+        
+        <transients>
+                <transient id="1"  transient_standard_name="strd" />
+        </transients>
+        
+        <grids>
+                <grid id="1" alias_name="grid_sender" />
+                <grid id="2" alias_name="grid_receiver" />
+        </grids>
+        
+        <dates>
+                <start_date>2008-03-09T16:05:07</start_date>
+                <end_date>2008-03-10T16:05:07</end_date>
+                <calendar>proleptic-gregorian</calendar>
+        </dates>
+        <timestep_unit>second</timestep_unit>
+        
+        <couples>
+                <couple>
+                        <component1 component_id="1" />
+                        <component2 component_id="2" />
+                        
+                        <transient_couple transient_id="1">
+                                <source component_ref="1" transient_grid_ref="1" />
+                                <target                   transient_grid_ref="1" />
+                                <timestep>
+                                        <source>2</source>
+                                        <target>2</target>
+                                        <coupling_period operation="accumulate">2</coupling_period>
+                                        <source_timelag>0</source_timelag>
+                                        <target_timelag>0</target_timelag>
+                                </timestep>
+                                <interpolation_requirements>
+                                        <interpolation method="conservative"
+                                                enforced_conservation="true"
+                                                partial_coverage="false"
+                                                normalisation="FRACAREA" />
+                                        <interpolation method="fixed_value" user_value="-2.0"/>
+                                </interpolation_requirements>
+
+                                <enforce_write_weight_file filename="">false</enforce_write_weight_file>
+                        </transient_couple>
+                        
+                 </couple>
+
+        </couples>
+</coupling>

@@ -1,0 +1,100 @@
+#!/bin/bash
+########
+# Help #
+########
+Help()
+{
+   # Display Help
+   echo "Install dummy component for mHM model."
+   echo
+   echo "Syntax: scriptTemplate [-h|m|l|c|v|d]"
+   echo "options:"
+   echo "h     Print this Help"
+   echo "m     Specify the machine"
+   echo "l     Get a listed of registered machines"
+   echo "o     I/O backend (netcdf[default] / pnetcdf)"
+   echo "c     Enable coupling [default OFF]"
+   echo "s     Self-contained dummy model [default OFF]"
+   echo "v     Verbose mode [default OFF]"
+   echo "d     Debug mode build type [default OFF]"
+   echo
+}
+
+List()
+{
+   echo "Registered and tested machines:"
+   echo "$(ls -1 machine)"
+}
+
+
+########
+# Main #
+########
+COUPLED=OFF
+PNC=OFF
+NC4=ON
+VERBOSE=OFF
+BTYPE=Release
+SELFC=OFF
+while getopts ":hm:lcvidso:" option; do
+   case $option in
+      h) # display Help
+         Help
+         exit;;
+      m) # define machine
+	 source machine/$OPTARG
+	 echo "Using ${OPTARG} machine"
+	 ;;
+      l)  # List machines
+	 List
+	 exit;;
+      o) if [[ "${OPTARG}" == "netcdf" ]]
+	 then
+           echo "NetCDF backend enabled"
+	   NC4=ON
+	   PNC=OFF
+	 elif [[ "${OPTARG}" == "pnetcdf" ]]
+         then
+	   echo "PNetCDF backend enabled"
+	   NC4=OFF
+	   PNC=ON
+	 else
+           echo "I/O backend not supported"
+	   exit
+	 fi
+	 ;;
+      c) # Enable coupling
+	 COUPLED=ON
+	 ;;
+      v) # Verbose mode
+	 VERBOSE=ON
+	 ;;
+      d) # Debug mode
+	 BTYPE=Debug
+	 ;;
+      s) # Self-contained dummy model
+	 SELFC=ON
+	 ;;
+     \?) # Invalid option
+         echo "Error: Invalid option"
+         exit;;
+   esac
+done
+
+mkdir build
+cd build
+
+cmake -DCMAKE_FIND_ROOT_PATH="${PNETCDF_ROOT}" \
+      -DCMAKE_INSTALL_PREFIX=${DUMMY_DIR}      \
+      -DCMAKE_BUILD_TYPE=${BTYPE}              \
+      -DENABLE_COUPLING=${COUPLED}             \
+      -DENABLE_PNETCDF=${PNC}                  \
+      -DENABLE_NETCDF=${NC4}                   \
+      -DSELF_CONTAINED=${SELFC}                \
+      -DCMAKE_VERBOSE_MAKEFILE:BOOL=${VERBOSE} \
+      ..
+
+make install
+cd ..
+rm -r build
+

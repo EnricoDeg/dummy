@@ -1,0 +1,16 @@
+#!/bin/bash
+module purge
+
+module add intel-oneapi-compilers/2022.0.1-gcc-11.2.0
+module add openmpi/4.1.2-intel-2021.5.0
+
+export FC=/sw/spack-levante/openmpi-4.1.2-yfwe6t/bin/mpif90
+
+export FFLAGS="-fpp"
+
+export PNETCDF_ROOT=/sw/spack-levante/parallel-netcdf-1.12.2-mc24h4
+export NETCDF_ROOT=/sw/spack-levante/netcdf-fortran-4.5.3-k6xq5g
+export YAC_ROOT=/work/ka1298/k202136/ICON-mHM/sw/yac-intel-openmpi
+export PKG_CONFIG_PATH="${YAC_ROOT}/lib/pkgconfig:${PKG_CONFIG_PATH}"
+
+export DUMMY_DIR=${PWD}

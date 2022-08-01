@@ -1,0 +1,5 @@
+g_nx   6
+g_ny   9
+nprocx 2
+nprocy 1
+nsteps 10
